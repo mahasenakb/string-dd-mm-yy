@@ -1,0 +1,62 @@
+<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CS.aspx.cs" Inherits="_Default" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <style type="text/css">
+        body
+        {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <u>1. Using RegularExpressionValidator</u>
+    <hr />
+    <asp:TextBox ID="txtDate1" runat="server" />
+    <asp:RegularExpressionValidator runat="server" ControlToValidate="txtDate1" ValidationExpression="(((0|1)[0-9]|2[0-9]|3[0-1])\/(0[1-9]|1[0-2])\/((19|20)\d\d))$"
+        ErrorMessage="Invalid date format." ValidationGroup="Group1" />
+    <br />
+    <br />
+    <asp:Button ID="Button1" Text="Validate" runat="server" ValidationGroup="Group1"
+        OnClick="Submit" />
+    <br />
+    <br />
+    <u>2. Using CustomValidator and JavaScript</u>
+    <hr />
+    <asp:TextBox ID="txtDate2" runat="server" Text="11/11/2011" />
+    <asp:CustomValidator runat="server" ClientValidationFunction="ValidateDate" ControlToValidate="txtDate2"
+        ErrorMessage="Invalid Date." ValidationGroup="Group2" />
+    <br />
+    <br />
+    <asp:Button ID="Button2" Text="Validate" runat="server" ValidationGroup="Group2"
+        OnClick="Submit" />
+    <script type="text/javascript">
+        function ValidateDate(sender, args) {
+            var dateString = document.getElementById(sender.controltovalidate).value;
+            var regex = /(((0|1)[0-9]|2[0-9]|3[0-1])\/(0[1-9]|1[0-2])\/((19|20)\d\d))$/;
+            if (regex.test(dateString)) {
+                var parts = dateString.split("/");
+                var dt = new Date(parts[1] + "/" + parts[0] + "/" + parts[2]);
+                args.IsValid = (dt.getDate() == parts[0] && dt.getMonth() + 1 == parts[1] && dt.getFullYear() == parts[2]);
+            } else {
+                args.IsValid = false;
+            }
+        }
+    </script>
+    <br />
+    <br />
+    <u>3. Using CustomValidator with Server Side validation</u>
+    <hr />
+    <asp:TextBox ID="txtDate3" runat="server" Text="11/11/2011" />
+    <asp:CustomValidator ID="CustomValidator1" runat="server" OnServerValidate="ValidateDate"
+        ControlToValidate="txtDate3" ErrorMessage="Invalid Date." ValidationGroup="Group3" />
+    <br />
+    <br />
+    <asp:Button ID="Button3" Text="Validate" runat="server" ValidationGroup="Group3" />
+    </form>
+</body>
+</html>
